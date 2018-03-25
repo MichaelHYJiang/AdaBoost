@@ -8,7 +8,6 @@ class DecisionStump(object):
         self.sign = None
     
     def train(self, trainset, label):
-        
         # assert trainset is a list of lists of float numbers
         # assert labels are +1 and -1
         trainset = np.array(trainset)
@@ -38,3 +37,12 @@ class DecisionStump(object):
         self.dim = best_dim
         self.thresh = best_thresh
         self.sign = best_sign
+        
+    def predict(self, testset):
+        # assert testset is a list of lists of float numbers
+        # output labels are +1 and -1 in a list
+        pred = []
+        for sample in testset:
+            prediction = (int(sample[self.dim] <= self.thresh) * 2 - 1) * self.sign
+            pred.append(prediction)
+        return pred
