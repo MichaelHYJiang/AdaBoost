@@ -48,6 +48,8 @@ class TestAdaboost(unittest.TestCase):
         ab = Adaboost(DecisionStump, 3)
         ab.train(trainset, labels)
         self.assertEqual(ab.beta, [0.42364893019360172, 0.64964149206513044, 0.75203869838813697])
+        pred = ab.predict(trainset)
+        self.assertEqual(list(pred), labels)
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,11 +1,12 @@
 import numpy as np
 
 class Adaboost:
-    def __init__(self, weak_classifier, max_iter=10):
+    def __init__(self, weak_classifier, max_iter=10, thresh=1e-4):
         self.weak_classifier = weak_classifier
         self.classifiers = []
         self.beta = []
         self.max_iter = max_iter
+        self.thresh = thresh
     
     def train(self, trainset, labels, max_iter=None):
         if max_iter is None:
@@ -26,4 +27,9 @@ class Adaboost:
             weights = weights / weights.sum()
             # print('weights:', weights)
             
-    
+    def predict(self, testset):
+        pred = []
+        for sample in testset:
+            prediction = np.inner(self.beta, [classifier.predict([sample])[0] for classifier in self.classifiers])
+            pred.append(prediction)
+        return (np.array(pred) > self.thresh).astype('int') * 2 - 1
