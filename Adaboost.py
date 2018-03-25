@@ -1,5 +1,7 @@
 import numpy as np
 
+from decision_stump import DecisionStump
+
 class Adaboost:
     def __init__(self, weak_classifier, max_iter=10, thresh=1e-4):
         self.weak_classifier = weak_classifier
@@ -33,3 +35,26 @@ class Adaboost:
             prediction = np.inner(self.beta, [classifier.predict([sample])[0] for classifier in self.classifiers])
             pred.append(prediction)
         return (np.array(pred) > self.thresh).astype('int') * 2 - 1
+        
+def cross_validation(trainset, labels, classifier):
+    pass
+    
+if __name__ == '__main__':
+    trainset = [[0, 1, 3],
+                [0, 3, 1],
+                [1, 2, 2],
+                [1, 1, 3],
+                [1, 2, 3],
+                [0, 1, 2],
+                [1, 1, 2],
+                [1, 1, 1],
+                [1, 3, 1],
+                [0, 2, 1]]
+    labels = [-1, -1, -1, -1, -1, -1, 1, 1, -1, -1]
+    ada = Adaboost(DecisionStump, max_iter=3)
+    ada.train(trainset, labels)
+    pred = ada.predict(trainset)
+    print((pred != np.array(labels)).astype('int').sum() / len(labels))
+    print(pred)
+    print(np.array(labels))
+    print(ada.beta)
