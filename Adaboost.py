@@ -36,8 +36,19 @@ class Adaboost:
             pred.append(prediction)
         return (np.array(pred) > self.thresh).astype('int') * 2 - 1
         
-def cross_validation(trainset, labels, classifier):
-    pass
+def cross_validation(trainset, labels, classifier_type, weak_classifier=DecisionStump, max_iter=3):
+    num_sample = len(trainset)
+    error = 0
+    for i in range(num_sample):
+        new_trainset = trainset[0:i] + trainset[i + 1::]
+        new_labels = labels[0:i] + labels[i + 1::]
+        testdata = trainset[i]
+        testlabel = labels[i]
+        classifier = classifier_type(weak_classifier=weak_classifier, max_iter=3)
+        classifier.train(new_trainset, new_labels)
+        prediction = classifier.predict([testdata])[0]
+        error = int(prediction != testlabel)
+        print('error rate:', error / num_sample)
     
 if __name__ == '__main__':
     trainset = [[0, 1, 3],
@@ -58,3 +69,6 @@ if __name__ == '__main__':
     print(pred)
     print(np.array(labels))
     print(ada.beta)
+    
+    print('\n' + '=' * 20 + ' Cross Validation Test ' + '=' * 20)
+    cross_validation(trainset, labels, Adaboost)
