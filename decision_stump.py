@@ -1,4 +1,3 @@
-
 import numpy as np
 
 class DecisionStump(object):
@@ -7,11 +6,15 @@ class DecisionStump(object):
         self.thresh = None
         self.sign = None
     
-    def train(self, trainset, label):
+    def train(self, trainset, label, weights=None):
         # assert trainset is a list of lists of float numbers
         # assert labels are +1 and -1
         trainset = np.array(trainset)
         num_samples, num_dim = trainset.shape
+        if weights is None:
+            weights = [1] * num_samples
+        else:
+            assert(len(weights) == num_samples)
         min_error = num_samples
         best_dim = 0
         best_thresh = 0
@@ -25,9 +28,10 @@ class DecisionStump(object):
                 # print('threshold:', threshold)
                 for sign in [+1, -1]:
                     error = 0
+                    # print('=')
                     for k in range(num_samples):
                         # print(int(label[k] != sign * int(int(trainset[k, i] <= threshold) * 2 - 1)))
-                        error += int(label[k] != sign * int((int(trainset[k, i] <= threshold) - 0.5) * 2))
+                        error += int(label[k] != sign * int((int(trainset[k, i] <= threshold) - 0.5) * 2)) * weights[k]
                     if error < min_error:
                         min_error = error
                         best_dim = i
